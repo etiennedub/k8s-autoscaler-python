@@ -82,8 +82,8 @@ class KubeOperator:
                     n.status = NodeStatus.DELETING
                 case [ProviderStatus.SHUTDOWN, OperatorStatus.DELETED]:
                     n.status = NodeStatus.SHUTDOWN
-                case _:
-                    raise KubeOperatorException(f"Unsupported status")
+                case unsupported:
+                    raise KubeOperatorException(f"Unsupported status. {unsupported}")
 
             # TODO: It would be favorable to use an independant kubelet config file on each node to set a unique provider id
             if n.status == NodeStatus.RUNNING:
