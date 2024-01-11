@@ -19,7 +19,7 @@ spec:
       imagePullSecrets:
         - name: regcred
       containers:
-        - image: ghcr.io/etiennedub/external-grpc-magiccastle:dev
+        - image: ghcr.io/etiennedub/k8s-autoscaler-python:dev
           name: ca-external-grpc-cloud-provider
           resources:
             limits:
