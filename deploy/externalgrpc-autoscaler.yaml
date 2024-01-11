@@ -9,7 +9,7 @@ metadata:
   namespace: kube-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
+kind: ClusterRoleBinding
 metadata:
   name: externalgrpc-autoscaler
   namespace: kube-system
@@ -18,7 +18,7 @@ metadata:
     k8s-app: cluster-autoscaler
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: Role
+  kind: ClusterRole
   name: externalgrpc-autoscaler
 subjects:
   - kind: ServiceAccount
@@ -27,7 +27,7 @@ subjects:
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
+kind: ClusterRole
 metadata:
   name: externalgrpc-autoscaler
   namespace: kube-system
