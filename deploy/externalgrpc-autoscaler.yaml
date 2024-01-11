@@ -1,0 +1,54 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ca-external-grpc-cloud-provider
+  namespace: kube-system
+  labels:
+    app: ca-external-grpc-cloud-provider
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ca-external-grpc-cloud-provider
+  template:
+    metadata:
+      labels:
+        app: ca-external-grpc-cloud-provider
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - image: ghcr.io/etiennedub/external-grpc-magiccastle:dev
+          name: ca-external-grpc-cloud-provider
+          resources:
+            limits:
+              cpu: 100m
+              memory: 300Mi
+            requests:
+              cpu: 100m
+              memory: 300Mi
+          args:
+            - /config/config.yaml
+            # - /venv/bin/python3 --version
+          volumeMounts:
+            - name: cluster-config
+              mountPath: /config
+              readOnly: true
+          #   - name: cluster-autoscaler-grpc-server-cert
+          #     mountPath: "/etc/ssl/server-cert"
+          #   - name: ssl-certs
+          #     mountPath: /etc/ssl/certs/ca-certificates.crt
+          #     readOnly: true
+          imagePullPolicy: "Always"
+      volumes:
+        - name: cluster-config
+          configMap:
+            name: externalgrpc-autoscaler-cluster-config
+        # - name: ssl-certs
+        #   hostPath:
+        #     path: /etc/ssl/certs/ca-certificates.crt #/etc/ssl/certs/ca-bundle.crt for Amazon Linux Worker Nodes
+        # - name: cluster-autoscaler-grpc-server-cert
+        #   secret:
+        #     secretName: cluster-autoscaler-grpc-server-cert
+        #     defaultMode: 0400

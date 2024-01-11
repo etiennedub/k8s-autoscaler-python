@@ -9,3 +9,5 @@ python -m grpc_tools.protoc \
   /home/etienned/Documents/CalculQubec/autoscaler/cluster-autoscaler/cloudprovider/externalgrpc/protos/externalgrpc.proto \
   /home/etienned/Documents/CalculQubec/kubernetes/staging/src/k8s.io/api/core/v1/generated.proto
 ```
+
+kubectl create cm externalgrpc-autoscaler-cluster-config --from-file=config.yaml --namespace=kube-system -o yaml
