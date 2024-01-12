@@ -37,7 +37,7 @@ metadata:
 rules:
   - apiGroups: [""]
     resources: ["nodes"]
-    verbs: ["delete","list","watch"]
+    verbs: ["delete","list","watch","get","patch","update"]
 ---
 apiVersion: apps/v1
 kind: Deployment

@@ -19,6 +19,7 @@ class KubeOperatorException(Exception):
 class OperatorStatus(StrEnum):
     # Match value with k8s api
     READY = 'True' # Node running
+    NOT_READY = 'False' # Node is not ready yet
     DISCONNECTED = 'Unknown' # Node disconnected (network issue or node shutdown)
     DELETED = auto() # Node not present in the cluster
 
@@ -43,7 +44,9 @@ class KubeOperator:
                 match condition.status:
                     case OperatorStatus.READY.value:
                         status = OperatorStatus.READY
-                    case OperatorStatus.DISCONNECTED.value:
+                    case OperatorStatus.DISCONNECTED.value :
+                        status = OperatorStatus.DISCONNECTED
+                    case OperatorStatus.NOT_READY.value :
                         status = OperatorStatus.DISCONNECTED
                     case _:
                         raise KubeOperatorException(f"Unknown node status: {condition.status}")

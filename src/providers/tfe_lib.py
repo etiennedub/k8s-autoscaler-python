@@ -87,8 +87,3 @@ class TFECLient:
         return requests.post(
             RUNS_API, headers=self.headers, json=run_data, timeout=self.timeout
         )
-
-if __name__ == "__main__":
-    client = TFECLient("chOc1djObukuqg.atlasv1.Vp0tivTOozgQlqrwb2tK72HXcjyYNxkV6ewyjRruPm6tvMjaePM8BzGHgXo3u1jSHQM", "ws-qvyQ4NJqo4kLprHR")
-    print(client.fetch_variable("pool"))
-
