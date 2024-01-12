@@ -85,7 +85,9 @@ class KubeOperator:
                 case unsupported:
                     raise KubeOperatorException(f"Unsupported status. {unsupported}")
 
-            # TODO: It would be favorable to use an independant kubelet config file on each node to set a unique provider id
+            # TODO: We need to set ProviderID={n.get_id()}.
+            # It would be favorable to use an independant kubelet config file on each node to set the coresponding provider_id.
+            # For now, we loop on each node and check that the provider id is set correctly.
             if n.status == NodeStatus.RUNNING:
                 try:
                     node_api = self.api.read_node(n.name)

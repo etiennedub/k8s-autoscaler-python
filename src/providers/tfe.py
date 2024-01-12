@@ -23,8 +23,13 @@ class TFEProvider(ProviderBase):
         self.client = TFECLient(config.token, config.workspace)
         self.var_id, _ = self._fetch_pool()
 
-    def get_running_nodes(self) -> set[str]:
-        _, nodes = self._fetch_pool()
+    def get_nodes_status(self) -> dict[str, ProviderStatus]:
+        nodes = {n.name: ProviderStatus.SHUTDOWN for n in self.managed_nodes}
+
+        _, running_nodes = self._fetch_pool()
+        for name in running_nodes:
+            if name in nodes.keys():
+                nodes[name] = ProviderStatus.RUNNING
         return nodes
 
     def _fetch_pool(self) -> Tuple[str, set[str]]:
@@ -47,12 +52,14 @@ class TFEProvider(ProviderBase):
         return tfe_var["id"], set()
 
     def sync_status(self) -> dict[str, ProviderStatus]:
-        running_nodes = self.get_running_nodes()
-        # TODO
-        nodes_to_start, nodes_to_stop = self._get_changes({})
+        nodes_status = self.get_nodes_status()
+        nodes_to_start, nodes_to_stop = self._get_changes(nodes_status)
 
         if len(nodes_to_start) > 0 or len(nodes_to_stop) > 0:
-            new_pool = running_nodes
+            new_pool = set()
+            for name, status in nodes_status.items():
+                if status == ProviderStatus.RUNNING:
+                    new_pool.add(name)
             new_pool |= set([n.name for n in nodes_to_start])
             new_pool -= set([n.name for n in nodes_to_stop])
             logger.debug(f"Changes to apply: {new_pool=}")
@@ -71,11 +78,6 @@ class TFEProvider(ProviderBase):
 
             logging.info(f"Autoscaller {new_pool=}")
 
-            for n in nodes_to_start:
-                n.status = NodeStatus.RUNNING
-            for n in nodes_to_stop:
-                n.status = NodeStatus.SHUTDOWN
-
         else:
             logger.debug(f"No changes to apply")
-        return {}
+        return nodes_status
