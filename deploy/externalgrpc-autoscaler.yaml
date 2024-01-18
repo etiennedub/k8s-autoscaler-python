@@ -68,7 +68,7 @@ spec:
               cpu: 100m
               memory: 300Mi
           args:
-            - /config/config.yaml
+            - /config/autoscaler.yaml
           volumeMounts:
             - name: cluster-config
               mountPath: /config
